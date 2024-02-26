@@ -8,10 +8,9 @@ import { tokens } from "../../theme.js";
 import { Tooltip, useTheme } from "@mui/material";
 
 const CustomToolbarSelect = ({ selectedRows }) => {
+  const [open, setOpen] = useState(false);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [open, setOpen] = useState(false);
-
   const handleDelete = () => {
     console.log("Eliminar:", selectedRows.data.length, "filas");
     handleClose();
@@ -52,9 +51,9 @@ const CustomToolbarSelect = ({ selectedRows }) => {
     </div>
   );
 };
-export const BasicTable = ({ data, columns, options }) => {
-  const defaultOptions = {
-    ...options,
+export const BasicTable = ({ data, columns, additionalOptions }) => {
+  const options = {
+    ...additionalOptions,
     rowsPerPage: 15,
     textLabels: {
       body: {
@@ -89,13 +88,16 @@ export const BasicTable = ({ data, columns, options }) => {
         all: "Todos",
       },
     },
-
+    filterOptions: {
+      names: ["Nombre"], // Reemplaza con los nombres de tus columnas
+      logic: (filterList, filters) => filterList.every((v) => v.length === 0),
+    },
     customToolbarSelect: (selectedRows) => (
       <CustomToolbarSelect selectedRows={selectedRows} />
     ),
   };
 
   return (
-    <MUIDataTable data={data} columns={columns} options={defaultOptions} />
+    <MUIDataTable data={data} columns={columns} options={options} />
   );
 };
